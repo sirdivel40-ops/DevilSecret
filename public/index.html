@@ -4,69 +4,156 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DEVIL SECRET</title>
+
 <style>
 *{box-sizing:border-box}
+
 body{
- margin:0;min-height:100vh;background:#080808;color:white;
- font-family:Arial,sans-serif;display:flex;justify-content:center;
- align-items:center;padding:20px;overflow-x:hidden
+ margin:0;min-height:100vh;
+ background:#050505;color:white;
+ font-family:Arial,sans-serif;
+ display:flex;justify-content:center;
+ align-items:center;padding:20px;
+ overflow-x:hidden;
 }
+
 body:before{
- content:"";position:fixed;width:350px;height:350px;
- background:#b00020;filter:blur(150px);opacity:.25;
- top:5%;left:50%;transform:translateX(-50%);z-index:-1
+ content:"";position:fixed;
+ width:450px;height:450px;
+ background:#d00030;filter:blur(150px);
+ opacity:.25;top:10%;left:50%;
+ transform:translateX(-50%);
+ z-index:-1;animation:glow 4s infinite alternate;
 }
+
+@keyframes glow{
+ from{opacity:.15}
+ to{opacity:.4}
+}
+
 .card{
- width:100%;max-width:430px;background:#111;
- border:1px solid #3b1018;border-radius:22px;
- padding:28px 22px;box-shadow:0 0 35px #a0002030;
- text-align:center
+ width:100%;max-width:460px;
+ background:linear-gradient(145deg,#171014,#080808);
+ border:1px solid #651126;
+ border-radius:25px;padding:28px 22px;
+ box-shadow:0 0 45px #ff003330;
+ text-align:center;
+ position:relative;overflow:hidden;
 }
-.logo{font-size:55px;filter:drop-shadow(0 0 15px red)}
-h1{letter-spacing:5px;color:#ff263f;margin:8px 0}
-.sub{color:#888;font-size:13px;letter-spacing:2px}
-.line{height:1px;background:#42131b;margin:24px 0}
-label{display:block;text-align:left;color:#ddd;font-size:13px;margin:15px 0 8px}
+
+.character{
+ height:160px;
+ display:flex;align-items:center;
+ justify-content:center;
+ position:relative;
+}
+
+.character img{
+ max-height:190px;max-width:100%;
+ object-fit:contain;
+ filter:drop-shadow(0 0 20px red);
+ animation:float 4s ease-in-out infinite;
+}
+
+@keyframes float{
+ 0%,100%{transform:translateY(0)}
+ 50%{transform:translateY(-9px)}
+}
+
+.logo{font-size:45px;filter:drop-shadow(0 0 15px red)}
+
+h1{
+ letter-spacing:5px;color:#ff263f;
+ margin:8px 0;text-shadow:0 0 15px red;
+}
+
+.sub{color:#999;font-size:12px;letter-spacing:3px}
+
+.line{height:1px;background:#541321;margin:22px 0}
+
+label{
+ display:block;text-align:left;
+ color:#ddd;font-size:12px;
+ margin:15px 0 8px;letter-spacing:1px;
+}
+
 textarea{
- width:100%;height:130px;background:#080808;color:white;
- border:1px solid #49202a;border-radius:12px;padding:14px;
- resize:none;font-size:15px;outline:none
+ width:100%;height:120px;
+ background:#080808;color:white;
+ border:1px solid #55202d;
+ border-radius:12px;padding:14px;
+ resize:none;font-size:15px;outline:none;
 }
-textarea:focus{border-color:#ff263f;box-shadow:0 0 12px #ff263f40}
+
+textarea:focus{
+ border-color:#ff263f;
+ box-shadow:0 0 15px #ff263f50;
+}
+
 .options{display:flex;gap:9px}
+
 .options button{
- flex:1;padding:12px 5px;border:1px solid #49202a;
- background:#181818;color:#ddd;border-radius:9px;cursor:pointer
+ flex:1;padding:12px 5px;
+ border:1px solid #55202d;
+ background:#171014;color:white;
+ border-radius:9px;cursor:pointer;
 }
-.options button.active{background:#4b0713;border-color:#ff263f;color:white}
+
+.options button.active{
+ background:#700019;border-color:#ff263f;
+ box-shadow:0 0 12px #ff263f55;
+}
+
 .create{
- width:100%;margin-top:22px;padding:15px;border:0;border-radius:10px;
+ width:100%;margin-top:22px;
+ padding:16px;border:0;border-radius:10px;
  background:linear-gradient(90deg,#850018,#ff263f);
- color:white;font-size:15px;font-weight:bold;letter-spacing:2px;
- cursor:pointer;box-shadow:0 0 20px #ff263f35
+ color:white;font-weight:bold;
+ letter-spacing:2px;cursor:pointer;
+ box-shadow:0 0 20px #ff263f55;
 }
+
+.create:active{transform:scale(.97)}
+
 .result{display:none;margin-top:20px;text-align:left}
+
 .result input{
- width:100%;padding:12px;background:#080808;color:#ff687b;
- border:1px solid #49202a;border-radius:8px
+ width:100%;padding:12px;
+ background:#080808;color:#ff687b;
+ border:1px solid #55202d;border-radius:8px;
 }
+
 .copy{
- width:100%;padding:12px;margin-top:10px;background:#251016;
- color:white;border:1px solid #a51c32;border-radius:8px
+ width:100%;padding:12px;margin-top:10px;
+ background:#251016;color:white;
+ border:1px solid #a51c32;border-radius:8px;
 }
+
 #status{font-size:13px;color:#ff687b;margin-top:12px}
-.footer{font-size:11px;color:#666;margin-top:25px}
+
+.footer{
+ font-size:10px;color:#777;
+ margin-top:25px;letter-spacing:1px;
+}
 </style>
 </head>
+
 <body>
 <div class="card">
- <div class="logo">😈</div>
+
+ <div class="character">
+  <img src="/devil-girl.png" alt="Devil Girl"
+  onerror="this.style.display='none'">
+  <div class="logo">😈</div>
+ </div>
+
  <h1>DEVIL SECRET</h1>
  <div class="sub">YOUR SECRET. YOUR RULES.</div>
  <div class="line"></div>
 
  <label>WRITE YOUR SECRET MESSAGE</label>
- <textarea id="message" maxlength="2000" placeholder="Type your secret message here..."></textarea>
+ <textarea id="message" maxlength="2000"
+ placeholder="Type your secret message here..."></textarea>
 
  <label>MESSAGE EXPIRY</label>
  <div class="options">
@@ -75,51 +162,71 @@ textarea:focus{border-color:#ff263f;box-shadow:0 0 12px #ff263f40}
   <button onclick="choose(3600,this)">1 HOUR</button>
  </div>
 
- <button class="create" onclick="createSecret()">CREATE SECRET LINK</button>
+ <button class="create" onclick="createSecret()">
+ CREATE SECRET LINK
+ </button>
 
  <div class="result" id="result">
   <label>YOUR SECRET LINK</label>
   <input id="link" readonly>
   <button class="copy" onclick="copyLink()">COPY LINK</button>
  </div>
+
  <div id="status"></div>
  <div class="footer">ONE MESSAGE. ONE VIEW. NO SECOND CHANCE.</div>
 </div>
 
 <script>
 let expiry=60;
+
 function choose(seconds,btn){
  expiry=seconds;
- document.querySelectorAll('.options button').forEach(b=>b.classList.remove('active'));
+ document.querySelectorAll('.options button')
+ .forEach(b=>b.classList.remove('active'));
  btn.classList.add('active');
 }
+
 async function createSecret(){
  const message=document.getElementById('message').value.trim();
  const status=document.getElementById('status');
- if(!message){status.textContent="Please write a message first.";return;}
+
+ if(!message){
+  status.textContent="Please write a message first.";
+  return;
+ }
+
  status.textContent="Creating your secret...";
+
  try{
   const response=await fetch('/api/create',{
    method:'POST',
    headers:{'Content-Type':'application/json'},
    body:JSON.stringify({message,expiry})
   });
+
   const data=await response.json();
   if(!response.ok)throw new Error(data.error||"Something went wrong");
+
   document.getElementById('link').value=data.link;
   document.getElementById('result').style.display='block';
   status.textContent="Your secret link is ready. 😈";
- }catch(error){status.textContent=error.message;}
+
+ }catch(error){
+  status.textContent=error.message;
+ }
 }
+
 async function copyLink(){
  const link=document.getElementById('link');
+
  try{
   await navigator.clipboard.writeText(link.value);
-  document.getElementById('status').textContent="Link copied!";
  }catch(e){
-  link.select();document.execCommand('copy');
-  document.getElementById('status').textContent="Link copied!";
+  link.select();
+  document.execCommand('copy');
  }
+
+ document.getElementById('status').textContent="Link copied!";
 }
 </script>
 </body>
