@@ -1,36 +1,51 @@
 import express from "express";
 import crypto from "crypto";
+import fs from "fs";
+import { initializeApp, cert } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
 
+const key = process.env.FIREBASE_SERVICE_ACCOUNT
+  ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
+  : JSON.parse(fs.readFileSync("serviceAccountKey.json", "utf8"));
+
+initializeApp({ credential: cert(key) });
+
+const db = getFirestore();
 const app = express();
+
 app.use(express.json());
 app.use(express.static("public"));
 
-const messages = new Map();
+app.post("/api/create", async (req, res) => {
+  try {
+    const { message, expiry } = req.body;
 
-app.post("/api/create", (req, res) => {
-  const { message, expiry } = req.body;
+    if (typeof message !== "string" || !message.trim() || message.length > 2000) {
+      return res.status(400).json({ error: "Invalid message" });
+    }
 
-  if (typeof message !== "string" || !message.trim() || message.length > 2000) {
-    return res.status(400).json({ error: "Invalid message" });
+    const seconds = Number(expiry);
+
+    if (![60, 300, 3600].includes(seconds)) {
+      return res.status(400).json({ error: "Invalid expiry" });
+    }
+
+    const token = crypto.randomBytes(32).toString("hex");
+
+    await db.collection("secret_messages").doc(token).set({
+      message,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + seconds * 1000
+    });
+
+    res.json({
+      success: true,
+      link: `${req.protocol}://${req.get("host")}/view/${token}`
+    });
+  } catch (error) {
+    console.error("Create error:", error);
+    res.status(500).json({ error: "Could not create secret" });
   }
-
-  const seconds = Number(expiry);
-
-  if (![60, 300, 3600].includes(seconds)) {
-    return res.status(400).json({ error: "Invalid expiry" });
-  }
-
-  const token = crypto.randomBytes(32).toString("hex");
-
-  messages.set(token, {
-    message,
-    expiresAt: Date.now() + seconds * 1000
-  });
-
-  res.json({
-    success: true,
-    link: `${req.protocol}://${req.get("host")}/view/${token}`
-  });
 });
 
 app.get("/view/:token", (req, res) => {
@@ -70,23 +85,39 @@ status.textContent="Your secret message:";
 </html>`);
 });
 
-app.get("/api/view/:token", (req, res) => {
-  const token = req.params.token;
-  const data = messages.get(token);
+app.get("/api/view/:token", async (req, res) => {
+  try {
+    const ref = db.collection("secret_messages").doc(req.params.token);
 
-  if (!data || data.expiresAt <= Date.now()) {
-    messages.delete(token);
-    return res.status(404).json({ error: "Message expired or already viewed" });
+    const result = await db.runTransaction(async (transaction) => {
+      const snapshot = await transaction.get(ref);
+
+      if (!snapshot.exists) {
+        return { error: "Message expired or already viewed" };
+      }
+
+      const data = snapshot.data();
+
+      if (data.expiresAt <= Date.now()) {
+        transaction.delete(ref);
+        return { error: "Message expired or already viewed" };
+      }
+
+      transaction.delete(ref);
+      return { message: data.message };
+    });
+
+    if (result.error) {
+      return res.status(404).json({ error: result.error });
+    }
+
+    res.json({ success: true, message: result.message });
+  } catch (error) {
+    console.error("View error:", error);
+    res.status(500).json({ error: "Could not open secret" });
   }
-
-  messages.delete(token);
-
-  res.json({
-    success: true,
-    message: data.message
-  });
 });
 
 app.listen(process.env.PORT || 3000, "0.0.0.0", () => {
-  console.log("DEVIL SECRET API READY 😈");
+  console.log("DEVIL SECRET FIRESTORE API READY 😈");
 });
